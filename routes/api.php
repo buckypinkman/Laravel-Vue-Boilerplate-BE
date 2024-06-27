@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\DistribusiController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\MonitoringController;
 use App\Http\Controllers\Api\QurbanUrutanController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WarehouseController;
@@ -19,4 +20,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('users/get_roles', [UserController::class, 'getRoles']);
     Route::apiResource('users', 'App\Http\Controllers\Api\UserController');
+
+    Route::get('roles/get_permissions', [RoleController::class, 'getPermissions']);
+    Route::apiResource('roles', 'App\Http\Controllers\Api\RoleController');
 });
