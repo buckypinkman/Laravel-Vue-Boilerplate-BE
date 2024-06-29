@@ -87,7 +87,19 @@ class RoleController extends BaseController
     public function show($id)
     {
         try {
-            $data = $this->model->with('permissions')->find($id);
+            $data = $this->model->with('permissions')->find($id)->toArray();
+
+            $permissions = collect($data['permissions'])->mapWithKeys(function($row) {
+                return [$row['name'] => true];
+            });
+
+            $allPermissions = Permission::whereNotIn('name', collect($data['permissions'])->pluck('name', 'id')->toArray())
+                ->get()
+                ->mapWithKeys(function($row) {
+                    return [$row['name'] => false];
+                });
+
+            $data = [...$data, 'permissions' => [...$allPermissions, ...$permissions]];
 
             $response = [
                 'success' => true,
@@ -123,9 +135,17 @@ class RoleController extends BaseController
 
             $payload = $validator->safe()->toArray();
 
-            $user = $this->model->find($id);
+            $model = $this->model->find($id);
 
-            $data = $user->update($payload);
+            $selectedPermissions = [];
+            foreach($request->permissions as $permissionName => $selected) {
+                if($selected) {
+                    $selectedPermissions[] = $permissionName;
+                }
+            }
+
+            $model->syncPermissions($selectedPermissions);
+            $data = $model->update($payload);
 
             $response = [
                 'success' => true,
