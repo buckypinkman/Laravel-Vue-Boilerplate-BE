@@ -21,7 +21,8 @@ class PermissionSeeder extends Seeder
             'agent',
             'saving_account',
             'saving_account_withdrawal',
-            'saving_account_transaction'
+            'saving_account_transaction',
+            'role'
         ];
 
         foreach($modules as $module) {

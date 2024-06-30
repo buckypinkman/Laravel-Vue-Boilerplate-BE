@@ -188,9 +188,13 @@ class RoleController extends BaseController
         }
     }
 
-    public function getPermissions() {
+    public function getPermissions(Request $request) {
         try {
-            $data = Permission::all();
+            if($request->query('specific')) {
+                $data = Auth::user()->roles[0]->permissions->pluck('name');
+            } else {
+                $data = Permission::all();
+            }
 
             $response = [
                 'success' => true,
