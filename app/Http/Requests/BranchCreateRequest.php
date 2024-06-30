@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class AgentCreateRequest extends FormRequest
+class BranchCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -22,11 +23,8 @@ class AgentCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => [
-                'unique:agents,code,NULL,code,deleted_at,NULL',
-                'required',
-            ],
             'name' => 'required',
+            'agent_id' => 'required|exists:agents,id',
         ];
     }
 }

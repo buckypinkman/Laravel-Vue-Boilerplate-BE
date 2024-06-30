@@ -48,4 +48,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the member associated with the user.
+     */
+    public function member(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Member::class);
+    }
+
+    /**
+     * modelHasRole
+     */
+    public function modelHasRole(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ModelHasRole::class, 'model_id', 'id')->where(['model_type' => 'App\Models\User']);
+    }
 }

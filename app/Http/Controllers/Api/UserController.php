@@ -56,7 +56,7 @@ class UserController extends BaseController
                     'data' => $validator->errors()
                 ], 400);
             }
-            
+
             $payload = $validator->safe()->toArray();
 
             $payload['password'] = Hash::make($payload['password']);
@@ -213,7 +213,7 @@ class UserController extends BaseController
             unset($validation['password']);
             $validation['username'] = 'required|unique:users,username,'.$id.',id,deleted_at,NULL';
             $validation['email'] = 'required|unique:users,email,'.$id.',id,deleted_at,NULL';
-        } 
+        }
 
         return $validation;
     }

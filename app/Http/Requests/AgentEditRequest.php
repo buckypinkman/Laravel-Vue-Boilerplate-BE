@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
-class AgentCreateRequest extends FormRequest
+class AgentEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +24,7 @@ class AgentCreateRequest extends FormRequest
     {
         return [
             'code' => [
-                'unique:agents,code,NULL,code,deleted_at,NULL',
+                'unique:agents,code,' . $this->code . ',code,deleted_at,NULL',
                 'required',
             ],
             'name' => 'required',

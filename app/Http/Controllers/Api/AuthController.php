@@ -17,9 +17,14 @@ class AuthController extends Controller
                 'username'=>'required|string',
                 'password'=>'required|min:6'
             ]);
-    
-            $user = User::where('username', $payload['username'])->first();
-    
+
+            $user = User::where('username', $payload['username'])
+            ->with([
+                'roles',
+                'modelHasRole'
+            ])
+            ->first();
+
             if(!$user || !Hash::check($payload['password'],$user->password)){
                 return response()->json([
                     'success' => false,
@@ -27,9 +32,9 @@ class AuthController extends Controller
                     'data' => []
                 ],401);
             }
-    
+
             $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Login Success',
@@ -47,7 +52,7 @@ class AuthController extends Controller
     public function logout(): JsonResponse {
         try {
             Auth::user()->tokens()->delete();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Logout Success',

@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\AgentCreateRequest;
 use App\Http\Requests\AgentEditRequest;
-use App\Models\Agent;
+use App\Http\Requests\BranchCreateRequest;
+use App\Http\Requests\BranchEditRequest;
+use App\Models\Branch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class AgentController extends BaseController
+class BranchController extends BaseController
 {
     protected $model;
 
-    public function __construct(Agent $user)
+    public function __construct(Branch $model)
     {
-        $this->model = $user;
+        $this->model = $model;
     }
 
     /**
@@ -24,7 +24,7 @@ class AgentController extends BaseController
      */
     public function index(Request $request)
     {
-        $data = $this->datatable($request, $this->model);
+        $data = $this->datatable($request, $this->model, ['agent']);
 
         return response()->json([
             'success' => true,
@@ -36,7 +36,7 @@ class AgentController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AgentCreateRequest $request)
+    public function store(BranchCreateRequest $request)
     {
         DB::beginTransaction();
         try {
@@ -102,15 +102,15 @@ class AgentController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(AgentEditRequest $request, string $id)
+    public function update(BranchEditRequest $request, string $id)
     {
         try {
 
             $payload = $request->safe()->toArray();
 
-            $agent = $this->model->find($id);
+            $branch = $this->model->find($id);
 
-            $data = $agent->update($payload);
+            $data = $branch->update($payload);
 
             $response = [
                 'success' => true,
@@ -158,12 +158,19 @@ class AgentController extends BaseController
     }
 
     /**
-     * Get all agents for list
+     * Get all branch for list
      */
-    public function list()
+    public function list(Request $request)
     {
         try {
-            $data = $this->model->all(['name as label', 'id as value']);
+
+            $model = $this->model;
+
+            if (!empty($request->get('agent_id'))) {
+                $model = $model->where('agent_id', $request->get('agent_id'));
+            }
+
+            $data = $model->select(['name as label', 'id as value'])->get();
 
             $response = [
                 'success' => true,

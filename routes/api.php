@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/test', [AuthController::class, 'test']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/logout', [AuthController::class, 'logout']);
@@ -24,5 +25,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('roles/get_permissions', [RoleController::class, 'getPermissions']);
     Route::apiResource('roles', 'App\Http\Controllers\Api\RoleController');
 
+    Route::get('agents/list', ['App\Http\Controllers\Api\AgentController', 'list']);
     Route::apiResource('agents', 'App\Http\Controllers\Api\AgentController');
+
+    Route::get('branches/list', ['App\Http\Controllers\Api\BranchController', 'list']);
+    Route::apiResource('branches', 'App\Http\Controllers\Api\BranchController');
 });
