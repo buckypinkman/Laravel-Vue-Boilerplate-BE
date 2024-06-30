@@ -23,7 +23,7 @@ class Agent extends Model
      */
     protected static function booted(): void
     {
-        static::addGlobalScope('ancient', function (Builder $builder) {
+        static::addGlobalScope('BasedOnRoles', function (Builder $builder) {
             $auth = auth()->user();
             $role = $auth->roles->first();
 
