@@ -48,7 +48,7 @@ class RoleController extends BaseController
         DB::beginTransaction();
         try {
 
-            $validator = Validator::make($request->all(), $this->validationRules());
+            $validator = Validator::make($request->all() + ['guard_name' => 'web'], $this->validationRules());
 
             if($validator->fails()) {
                 return response()->json([
@@ -57,7 +57,7 @@ class RoleController extends BaseController
                     'data' => $validator->errors()
                 ], 400);
             }
-            
+
             $payload = $validator->safe()->toArray();
 
             $data = $this->model->create($payload);
