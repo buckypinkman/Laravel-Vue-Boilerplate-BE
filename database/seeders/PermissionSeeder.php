@@ -19,6 +19,7 @@ class PermissionSeeder extends Seeder
             'member',
             'branch',
             'agent',
+            'saving_account_category',
             'saving_account',
             'saving_account_withdrawal',
             'saving_account_transaction',

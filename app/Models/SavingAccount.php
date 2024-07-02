@@ -10,4 +10,6 @@ use Wildside\Userstamps\Userstamps;
 class SavingAccount extends Model
 {
     use HasFactory, Userstamps, SoftDeletes;
+
+    protected $guarded = [];
 }

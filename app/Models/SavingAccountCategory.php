@@ -10,4 +10,6 @@ use Wildside\Userstamps\Userstamps;
 class SavingAccountCategory extends Model
 {
     use HasFactory, Userstamps, SoftDeletes;
+
+    protected $guarded = [];
 }
