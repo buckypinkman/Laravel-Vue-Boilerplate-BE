@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::get('users/get_roles', [UserController::class, 'getRoles']);
+    Route::get('users/detail', [UserController::class, 'detail']);
     Route::apiResource('users', 'App\Http\Controllers\Api\UserController');
 
     Route::get('roles/get_permissions', [RoleController::class, 'getPermissions']);

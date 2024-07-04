@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\Company;
+use App\Models\Member;
+use App\Models\ModelHasRole;
 use App\Models\Outlet;
 use App\Models\User;
 
@@ -64,6 +66,19 @@ class UserController extends BaseController
             $data = $this->model->create($payload);
             $data->assignRole($payload['role']);
 
+            $data->roles()->update([
+                'agent_id' => $payload['agent_id'],
+                'branch_id' => $payload['branch_id'],
+            ]);
+
+            $member = Member::create([
+                'mobile_no' => $request['mobile_no'],
+                'is_member' => $request['is_member'],
+                'branch_id' => $request['branch_id']
+            ]);
+
+            $this->model->whereId($data->id)->update(['member_id' => $member->id]);
+
             DB::commit();
 
             $response = [
@@ -89,7 +104,7 @@ class UserController extends BaseController
     public function show($id)
     {
         try {
-            $data = $this->model->find($id);
+            $data = $this->model->with('userRoles', 'member')->find($id);
 
             $response = [
                 'success' => true,
@@ -129,11 +144,21 @@ class UserController extends BaseController
 
             if (!empty($payload['password'])) $payload['password'] = Hash::make($payload['password']);
             else unset($payload['password']);
-            $payload['type'] = $payload['role'];
 
             $data = $user->update($payload);
-            DB::table('model_has_roles')->where('model_id',$user->id)->delete();
+            DB::table('model_has_roles')->where('model_type', 'App\Models\User')->where('model_id',$user->id)->delete();
             $user->assignRole($payload['role']);
+
+            $user->roles()->update([
+                'agent_id' => $payload['agent_id'],
+                'branch_id' => $payload['branch_id'],
+            ]);
+
+            Member::whereId($user->member_id)->update([
+                'mobile_no' => $request['mobile_no'],
+                'is_member' => $request['is_member'],
+                'branch_id' => $request['branch_id']
+            ]);
 
             $response = [
                 'success' => true,
@@ -200,6 +225,29 @@ class UserController extends BaseController
         }
     }
 
+    public function detail()
+    {
+        try {
+            $data = User::with('userRoles')->find(Auth::user()->id);
+
+            $response = [
+                'success' => true,
+                'message' => 'Success retrieve data',
+                'data' => $data
+            ];
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            $response = [
+                'success' => false,
+                'message' => 'Server Error',
+                'data' => $e->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
     public function validationRules($id = null) {
         $validation = [
             'name' => 'required',
@@ -207,6 +255,10 @@ class UserController extends BaseController
             'email' => 'required|unique:users,email,NULL,id,deleted_at,NULL',
             'password' => 'required',
             'role' => 'required',
+            'agent_id' => 'required',
+            'branch_id' => 'required',
+            'is_member' => 'required',
+            'mobile_no' => 'required'
         ];
 
         if($id) {

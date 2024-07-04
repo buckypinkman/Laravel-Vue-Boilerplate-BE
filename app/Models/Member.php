@@ -10,4 +10,6 @@ use Wildside\Userstamps\Userstamps;
 class Member extends Model
 {
     use HasFactory, Userstamps, SoftDeletes;
+
+    protected $guarded = [];
 }

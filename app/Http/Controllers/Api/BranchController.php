@@ -163,9 +163,7 @@ class BranchController extends BaseController
     public function list(Request $request)
     {
         try {
-
             $model = $this->model;
-
             if (!empty($request->get('agent_id'))) {
                 $model = $model->where('agent_id', $request->get('agent_id'));
             }

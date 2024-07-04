@@ -28,10 +28,6 @@ class Branch extends Model
                 'model_id' => $auth->id,
                 'role_id' => $role->id
             ])
-            ->with([
-                'agent',
-                'branch'
-            ])
             ->first();
 
             if ($auth->hasRole('kadis') && $auth->hasRole('kabag')) {

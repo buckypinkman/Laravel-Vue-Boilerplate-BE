@@ -32,11 +32,9 @@ class Agent extends Model
                 'model_id' => $auth->id,
                 'role_id' => $role->id
             ])
-            ->with([
-                'agent',
-                'branch'
-            ])
             ->first();
+
+            $branch = Branch::whereId($modelHasRole->branch_id)->first();
 
             if ($auth->hasRole('kadis') && $auth->hasRole('kabag')) {
                 return;
@@ -47,7 +45,7 @@ class Agent extends Model
             }
 
             if ($auth->hasRole('karan') || $auth->hasRole('kaur')) {
-                $builder->where('id', $modelHasRole->branch->agent_id);
+                $builder->where('id', $branch->agent_id);
             }
         });
     }
