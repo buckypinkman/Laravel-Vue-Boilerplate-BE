@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RolesEnum;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,15 +37,15 @@ class Agent extends Model
 
             $branch = Branch::whereId($modelHasRole->branch_id)->first();
 
-            if ($auth->hasRole('kadis') && $auth->hasRole('kabag')) {
+            if ($auth->hasRole(RolesEnum::KADIS->value) && $auth->hasRole(RolesEnum::KABAG->value)) {
                 return;
             }
 
-            if ($auth->hasRole('agent') || $auth->hasRole('kasi')) {
+            if ($auth->hasRole(RolesEnum::AGEN->value) || $auth->hasRole(RolesEnum::KASI->value)) {
                 $builder->where('id', $modelHasRole->agent_id);
             }
 
-            if ($auth->hasRole('karan') || $auth->hasRole('kaur')) {
+            if ($auth->hasRole(RolesEnum::KARAN->value) || $auth->hasRole(RolesEnum::KAUR->value)) {
                 $builder->where('id', $branch->agent_id);
             }
         });

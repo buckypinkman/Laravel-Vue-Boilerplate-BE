@@ -164,8 +164,8 @@ class BranchController extends BaseController
     {
         try {
             $model = $this->model;
-            if (!empty($request->get('agent_id'))) {
-                $model = $model->where('agent_id', $request->get('agent_id'));
+            if (!empty($request->query('agentId'))) {
+                $model = $model->where('agent_id', $request->get('agentId'));
             }
 
             $data = $model->select(['name as label', 'id as value'])->get();
