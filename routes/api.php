@@ -25,16 +25,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('roles/get_permissions', [RoleController::class, 'getPermissions']);
     Route::apiResource('roles', 'App\Http\Controllers\Api\RoleController');
-
-    Route::get('agents/list', ['App\Http\Controllers\Api\AgentController', 'list']);
-    Route::apiResource('agents', 'App\Http\Controllers\Api\AgentController');
-
-    Route::get('branches/list', ['App\Http\Controllers\Api\BranchController', 'list']);
-    Route::apiResource('branches', 'App\Http\Controllers\Api\BranchController');
-
-    Route::get('saving-account-categories/list', ['App\Http\Controllers\Api\SavingAccountCategoryController', 'list']);
-    Route::apiResource('saving-account-categories', 'App\Http\Controllers\Api\SavingAccountCategoryController');
-
-    Route::apiResource('saving-account', 'App\Http\Controllers\Api\SavingAccountController');
-
 });

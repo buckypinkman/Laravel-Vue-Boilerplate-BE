@@ -11,10 +11,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+use Wildside\Userstamps\Userstamps;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, Userstamps;
 
     /**
      * The attributes that are mass assignable.
@@ -52,26 +53,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the member associated with the user.
-     */
-    public function member(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Member::class);
-    }
-
-    /**
      * modelHasRole
      */
     public function modelHasRole(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(ModelHasRole::class, 'model_id', 'id')->where(['model_type' => 'App\Models\User']);
-    }
-
-    /**
-     * Get user roles with custom pivot columns from model_has_roles
-     */
-    public function userRoles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-       return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id')->withPivot('agent_id', 'branch_id', 'dist_id');
     }
 }

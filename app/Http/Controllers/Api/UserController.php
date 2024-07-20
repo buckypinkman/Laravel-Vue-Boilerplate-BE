@@ -66,19 +66,6 @@ class UserController extends BaseController
             $data = $this->model->create($payload);
             $data->assignRole($payload['role']);
 
-            $data->roles()->update([
-                'agent_id' => $payload['agent_id'],
-                'branch_id' => $payload['branch_id'],
-            ]);
-
-            $member = Member::create([
-                'mobile_no' => $request['mobile_no'],
-                'is_member' => $request['is_member'],
-                'branch_id' => $request['branch_id']
-            ]);
-
-            $this->model->whereId($data->id)->update(['member_id' => $member->id]);
-
             DB::commit();
 
             $response = [
@@ -146,19 +133,9 @@ class UserController extends BaseController
             else unset($payload['password']);
 
             $data = $user->update($payload);
+            
             DB::table('model_has_roles')->where('model_type', 'App\Models\User')->where('model_id',$user->id)->delete();
             $user->assignRole($payload['role']);
-
-            $user->roles()->update([
-                'agent_id' => $payload['agent_id'],
-                'branch_id' => $payload['branch_id'],
-            ]);
-
-            Member::whereId($user->member_id)->update([
-                'mobile_no' => $request['mobile_no'],
-                'is_member' => $request['is_member'],
-                'branch_id' => $request['branch_id']
-            ]);
 
             $response = [
                 'success' => true,
@@ -254,11 +231,6 @@ class UserController extends BaseController
             'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             'email' => 'required|unique:users,email,NULL,id,deleted_at,NULL',
             'password' => 'required',
-            'role' => 'required',
-            'agent_id' => 'required',
-            'branch_id' => 'required',
-            'is_member' => 'required',
-            'mobile_no' => 'required'
         ];
 
         if($id) {
